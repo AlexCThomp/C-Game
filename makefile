@@ -3,12 +3,12 @@ CFLAGS = -c -std=c++0x
 
 
 Game: $(OBJS)
-	g++ $(OBJS) -o Game
-
+	g++ $(OBJS) -o Game -lsfml-graphics -lsfml-window -lsfml-system
+	
 Map.o: Map.cpp Map.h
 	g++ $(CFLAGS) Map.cpp -o Map.o
 	
-GameMain.o: GameMain.cpp Map.h
+GameMain.o: GameMain.cpp Map.h Drawer.h
 	g++ $(CFLAGS) GameMain.cpp -o GameMain.o
 	
 clean:
