@@ -3,7 +3,6 @@
 //VERSION: 6/1/2017
 #include <SFML/Graphics.hpp>
 #include "Map.h"
-#include "Drawer.h"
 
 int main()
 {	
