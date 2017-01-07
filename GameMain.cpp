@@ -1,5 +1,5 @@
 //GameMain.cpp
-//AUTHOR: ALEXANDER THOMPSON
+//AUTHOR: ALEXANDER THOMPSON and maybe Steve?
 //VERSION: 6/1/2017
 #include <SFML/Graphics.hpp>
 #include "Map.h"
