@@ -48,7 +48,7 @@ int main()
 			}
 			
 		}
-
+		map.drawMap(window);
 		window.display();
 
 	}	

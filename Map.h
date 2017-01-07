@@ -25,14 +25,18 @@ class Map{
 	//loads layout from fileName
 	Map(string,string,string,string);
 	
+	//Get methods
 	char** getLayout();
 	sf::Texture getWall();
 	sf::Texture getGround();
 	sf::Texture getPlayer();
 	int getWidth();
 	int getHeight();
+	
 	//prints layout to terminal (test method)
 	void printLayout();
+	
+	//renders map in current stat into the input render window (passed by reference)
 	void drawMap(sf::RenderWindow&);
 };
 	
