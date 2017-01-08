@@ -3,12 +3,15 @@
 //VERSION: 6/1/2017
 #include <SFML/Graphics.hpp>
 #include "Map.h"
+#include "Player.h"
 
 int main()
 {	
-	
-	sf::RenderWindow window(sf::VideoMode(1920,1080), "test");
+	sf::VideoMode resolution = sf::VideoMode::getDesktopMode();
+	sf::RenderWindow window(resolution, "test");
 	Map map("testMap.txt", "test-wall.png", "test-ground.png", "test-bro.png");
+	Player player(map,30,16);
+	window.clear(sf::Color::Black);
 	map.drawMap(window);
 	map.printLayout();
 	
@@ -29,15 +32,19 @@ int main()
 				case sf::Event::KeyPressed: //user pressed a key
 					switch (event.key.code){
 						case sf::Keyboard::Left: //left arrow
+							player.move(map,-1,0);
 							break;
 							
 						case sf::Keyboard::Up: //up arrow
+							player.move(map,0,-1);
 							break;
 							
 						case sf::Keyboard::Right: //right arrow
+							player.move(map,1,0);
 							break;
 							
 						case sf::Keyboard::Down: //down arrow
+							player.move(map,0,1);
 							break;
 					}
 					break;

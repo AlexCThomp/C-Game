@@ -27,11 +27,15 @@ class Map{
 	
 	//Get methods
 	char** getLayout();
+	char getTile(int,int);
 	sf::Texture getWall();
 	sf::Texture getGround();
 	sf::Texture getPlayer();
 	int getWidth();
 	int getHeight();
+	
+	//Set methods
+	void setTile(int,int,char);
 	
 	//prints layout to terminal (test method)
 	void printLayout();

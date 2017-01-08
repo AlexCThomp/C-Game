@@ -44,6 +44,7 @@ Map::Map(int a,int b,string mapFile, string wallFile, string groundFile,
 			}
 		}
 	}
+	
 	file.close();
 		
 }
@@ -54,11 +55,19 @@ Map::Map(string mapFile, string wallFile, string groundFile,string playerFile) :
 
 //get methods
 char** Map::getLayout(){return layout;}
+char Map::getTile(int x, int y){return layout[y][x];}
 sf::Texture Map::getWall(){return wall;}
 sf::Texture Map::getGround(){return ground;}
 sf::Texture Map::getPlayer(){return player;}
 int Map::getWidth(){return width;}
 int Map::getHeight(){return height;}
+
+//set Methods
+
+//Sets a tile to input character(maybe we need a custom datat type for tiles?)
+void Map:: setTile(int x, int y, char c){
+	layout[y][x] = c;
+}
 
 //prints map layout (test method)
 void Map::printLayout(){
@@ -73,6 +82,8 @@ void Map::printLayout(){
 void Map::drawMap(sf::RenderWindow &window){
 	
 	sf::Sprite** spriteLayout;
+	int screenWidth = window.getSize().x;
+	int screenHeight = window.getSize().y;
 	
 	spriteLayout = new sf::Sprite* [height];
 	for (int i=0; i<height; i++){
@@ -100,7 +111,8 @@ void Map::drawMap(sf::RenderWindow &window){
 					spriteLayout[i][j].setTexture(player);
 					break;
 				}
-			spriteLayout[i][j].setPosition(sf::Vector2f(j*60, i*60));
+			
+			spriteLayout[i][j].setPosition(sf::Vector2f(j*(screenWidth/width), i*(screenHeight/height)));
 			window.draw(spriteLayout[i][j]);
 		}
 	}
