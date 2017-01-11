@@ -37,6 +37,9 @@ class Map{
 	//Set methods
 	void setTile(int,int,char);
 	
+	//set player texture
+	void setPlayer(string);
+	
 	//prints layout to terminal (test method)
 	void printLayout();
 	

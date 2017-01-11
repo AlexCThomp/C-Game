@@ -1,5 +1,5 @@
 OBJS = Map.o Player.o GameMain.o
-CFLAGS = -c -std=c++0x
+CFLAGS = -Wall -c -std=c++0x
 
 
 Game: $(OBJS)

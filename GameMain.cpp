@@ -2,18 +2,21 @@
 //AUTHOR: ALEXANDER THOMPSON and maybe Steve?
 //VERSION: 6/1/2017
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include "Map.h"
 #include "Player.h"
 
 int main()
 {	
+	
 	sf::VideoMode resolution = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(resolution, "test");
-	Map map("testMap.txt", "test-wall.png", "test-ground.png", "test-bro.png");
+	Map map("testMap.txt", "test-wall.png", "test-ground.png", "forwardPlayer.png");
 	Player player(map,30,16);
 	window.clear(sf::Color::Black);
 	map.drawMap(window);
 	map.printLayout();
+	cout << "\n" << window.getSize().y;
 	
 	window.display(); //display the initial state
 			
@@ -33,18 +36,22 @@ int main()
 					switch (event.key.code){
 						case sf::Keyboard::Left: //left arrow
 							player.move(map,-1,0);
+							map.setPlayer("leftPlayer.png");
 							break;
 							
 						case sf::Keyboard::Up: //up arrow
 							player.move(map,0,-1);
+							map.setPlayer("forwardPlayer.png");
 							break;
 							
 						case sf::Keyboard::Right: //right arrow
 							player.move(map,1,0);
+							map.setPlayer("rightPlayer.png");
 							break;
 							
 						case sf::Keyboard::Down: //down arrow
 							player.move(map,0,1);
+							map.setPlayer("backwardPlayer.png");
 							break;
 					}
 					break;

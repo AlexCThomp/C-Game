@@ -69,6 +69,14 @@ void Map:: setTile(int x, int y, char c){
 	layout[y][x] = c;
 }
 
+//sets player texture
+void Map:: setPlayer(string newTexture){
+	
+	if (!player.loadFromFile(newTexture)){
+		cout << "Error loading player texture!";
+	}
+}
+
 //prints map layout (test method)
 void Map::printLayout(){
 	for (int i=0; i<height; i++){
@@ -84,6 +92,8 @@ void Map::drawMap(sf::RenderWindow &window){
 	sf::Sprite** spriteLayout;
 	int screenWidth = window.getSize().x;
 	int screenHeight = window.getSize().y;
+	float resScaleY = (float) screenHeight / 1080.f; 
+	float resScaleX = (float) screenWidth / 1920.f;
 	
 	spriteLayout = new sf::Sprite* [height];
 	for (int i=0; i<height; i++){
@@ -112,6 +122,7 @@ void Map::drawMap(sf::RenderWindow &window){
 					break;
 				}
 			
+			spriteLayout[i][j].setScale(resScaleX, resScaleY);
 			spriteLayout[i][j].setPosition(sf::Vector2f(j*(screenWidth/width), i*(screenHeight/height)));
 			window.draw(spriteLayout[i][j]);
 		}
