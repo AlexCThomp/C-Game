@@ -8,13 +8,22 @@
 
 class Player{
 	private:
+	Map map;
 	int x,y;
 	char standingOn;
+	char layoutTile;
 	
 	public:
-	Player(Map, int, int);
+	Player(Map&,char, int, int);
 	
-	void move(Map,int,int);
+	//get methods
+	int getX();
+	int getY();
+	
+	void move(int,int);
+	
+	void target(int,int);
+	void target(Player);
 };
 
 

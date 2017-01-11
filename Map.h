@@ -12,18 +12,18 @@ using namespace std;
 class Map{
 	private:
 	int height, width;
-	sf::Texture wall,ground,player;
+	sf::Texture wall,ground,player,enemy;
 	char** layout;
 	
 	public:
 	//constructor for Map
 	//sets width and height respectively to paraneter values
 	//loads layout from fileName
-	Map(int,int,string,string,string,string);
+	Map(int,int,string,string,string,string,string);
 	
 	//constructs map with width and height as default values
 	//loads layout from fileName
-	Map(string,string,string,string);
+	Map(string,string,string,string,string);
 	
 	//Get methods
 	char** getLayout();

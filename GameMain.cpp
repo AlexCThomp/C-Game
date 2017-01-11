@@ -11,8 +11,9 @@ int main()
 	
 	sf::VideoMode resolution = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(resolution, "test");
-	Map map("testMap.txt", "test-wall.png", "test-ground.png", "forwardPlayer.png");
-	Player player(map,30,16);
+	Map map("testMap.txt", "test-wall.png", "test-ground.png", "forwardPlayer.png", "test-enemy.png");
+	Player player(map,'P',30,16);
+	Player enemy(map, 'E',1,1);
 	window.clear(sf::Color::Black);
 	map.drawMap(window);
 	map.printLayout();
@@ -35,22 +36,22 @@ int main()
 				case sf::Event::KeyPressed: //user pressed a key
 					switch (event.key.code){
 						case sf::Keyboard::Left: //left arrow
-							player.move(map,-1,0);
+							player.move(-1,0);
 							map.setPlayer("leftPlayer.png");
 							break;
 							
 						case sf::Keyboard::Up: //up arrow
-							player.move(map,0,-1);
+							player.move(0,-1);
 							map.setPlayer("forwardPlayer.png");
 							break;
 							
 						case sf::Keyboard::Right: //right arrow
-							player.move(map,1,0);
+							player.move(1,0);
 							map.setPlayer("rightPlayer.png");
 							break;
 							
 						case sf::Keyboard::Down: //down arrow
-							player.move(map,0,1);
+							player.move(0,1);
 							map.setPlayer("backwardPlayer.png");
 							break;
 					}
@@ -62,6 +63,7 @@ int main()
 			}
 			
 		}
+		enemy.target(player);
 		map.drawMap(window);
 		window.display();
 

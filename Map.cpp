@@ -13,7 +13,7 @@ using namespace std;
 //sets width to a, height to b,
 //loads layout from fileName	
 Map::Map(int a,int b,string mapFile, string wallFile, string groundFile,
-													string playerFile){
+													string playerFile, string enemyFile){
 	width  = a;
 	height = b;
 	
@@ -25,6 +25,9 @@ Map::Map(int a,int b,string mapFile, string wallFile, string groundFile,
 	}
 	if (!player.loadFromFile(playerFile)){
 		cout << "Error loading player texture!";
+	}
+	if (!enemy.loadFromFile(enemyFile)){
+		cout << "Error loading enemyFile";
 	}
 	
 	layout = new char*[height];
@@ -50,8 +53,8 @@ Map::Map(int a,int b,string mapFile, string wallFile, string groundFile,
 }
 //constructs map with width and height as default values
 //loads layout from fileName
-Map::Map(string mapFile, string wallFile, string groundFile,string playerFile) :
-	Map::Map(32, 18, mapFile, wallFile, groundFile, playerFile){}
+Map::Map(string mapFile, string wallFile, string groundFile,string playerFile, string enemyFile) :
+	Map::Map(32, 18, mapFile, wallFile, groundFile, playerFile, enemyFile){}
 
 //get methods
 char** Map::getLayout(){return layout;}
@@ -117,8 +120,12 @@ void Map::drawMap(sf::RenderWindow &window){
 					spriteLayout[i][j].setTexture(player);
 					break;
 					
+				case 'E':
+					spriteLayout[i][j].setTexture(enemy);
+					break;
+					
 				default:
-					spriteLayout[i][j].setTexture(player);
+					spriteLayout[i][j].setTexture(ground);
 					break;
 				}
 			
