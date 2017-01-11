@@ -20,9 +20,12 @@ int main()
 	cout << "\n" << window.getSize().y;
 	
 	window.display(); //display the initial state
-			
+	
+	
+	sf::Clock clock;
 	
 	while(window.isOpen()){
+	
 		
 		sf::Event event;
 		while (window.pollEvent(event)){
@@ -63,7 +66,10 @@ int main()
 			}
 			
 		}
-		enemy.target(player);
+		if (clock.getElapsedTime().asSeconds() > 0.5f){ 
+			enemy.target(player);
+			clock.restart();
+		}
 		map.drawMap(window);
 		window.display();
 

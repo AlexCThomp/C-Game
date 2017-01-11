@@ -28,7 +28,7 @@ void Player:: target(int tX, int tY){
 	int xDist = x - tX;
 	int yDist = y - tY;
 	
-	if ((abs(xDist) < 6) && (abs(yDist) < 6)){ 	
+	if ((abs(xDist) < 10) && (abs(yDist) < 10)){ 	
 		if (abs(xDist) >= abs(yDist)){
 		
 			xMov = ((xDist > 0) ? -1:1);
