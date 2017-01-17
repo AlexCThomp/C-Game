@@ -9,15 +9,16 @@
 int main()
 {	
 	
+	
 	sf::VideoMode resolution = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(resolution, "test");
 	Map map("testMap.txt", "test-wall.png", "test-ground.png", "forwardPlayer.png", "test-enemy.png");
-	Player player(map,'P',30,16);
-	Player enemy(map, 'E',1,1);
+	Player player(map,'P',0.25f,30,16);
+	Player enemy(map, 'E',0.5f,1,1);
 	window.clear(sf::Color::Black);
 	map.drawMap(window);
 	map.printLayout();
-	cout << "\n" << window.getSize().y;
+	cout << "\n";
 	
 	window.display(); //display the initial state
 	
@@ -39,37 +40,56 @@ int main()
 				case sf::Event::KeyPressed: //user pressed a key
 					switch (event.key.code){
 						case sf::Keyboard::Left: //left arrow
-							player.move(-1,0);
-							map.setPlayer("leftPlayer.png");
+							player.setDirection(Player::left);
 							break;
 							
 						case sf::Keyboard::Up: //up arrow
-							player.move(0,-1);
-							map.setPlayer("forwardPlayer.png");
+							player.setDirection(Player::up);
 							break;
 							
 						case sf::Keyboard::Right: //right arrow
-							player.move(1,0);
-							map.setPlayer("rightPlayer.png");
+							player.setDirection(Player::right);
 							break;
 							
 						case sf::Keyboard::Down: //down arrow
-							player.move(0,1);
-							map.setPlayer("backwardPlayer.png");
+							player.setDirection(Player::down);
+							break;
+							
+						default:
 							break;
 					}
 					break;
-					
+				
+				case sf::Event::KeyReleased: 
+					switch (event.key.code){
+						case sf::Keyboard::Left: //left arrow
+							player.setDirection(Player::none);
+							break;
+							
+						case sf::Keyboard::Up: //up arrow
+							player.setDirection(Player::none);
+							break;
+							
+						case sf::Keyboard::Right: //right arrow
+							player.setDirection(Player::none);
+							break;
+							
+						case sf::Keyboard::Down: //down arrow
+							player.setDirection(Player::none);
+							break;
+							
+						default:
+							break;	
+						}
+				
 				default:
 					break;
 				
 			}
 			
 		}
-		if (clock.getElapsedTime().asSeconds() > 0.5f){ 
-			enemy.target(player);
-			clock.restart();
-		}
+		player.move();
+		enemy.target(player);
 		map.drawMap(window);
 		window.display();
 
