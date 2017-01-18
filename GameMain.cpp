@@ -13,8 +13,10 @@ int main()
 	sf::VideoMode resolution = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(resolution, "test");
 	Map map("testMap.txt", "test-wall.png", "test-ground.png", "forwardPlayer.png", "test-enemy.png");
-	Player player(map,'P',0.25f,30,16);
-	Player enemy(map, 'E',0.5f,1,1);
+	Player player(map,'P',0.1f,30,16,
+	"forwardPlayer.png","rightPlayer.png","backwardPlayer.png","leftPlayer.png");
+	Player enemy(map, 'E',0.25f,1,1,
+	"test-enemy.png","test-enemy.png","test-enemy.png","test-enemy.png");
 	window.clear(sf::Color::Black);
 	map.drawMap(window);
 	map.printLayout();

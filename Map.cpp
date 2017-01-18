@@ -80,6 +80,13 @@ void Map:: setPlayer(string newTexture){
 	}
 }
 
+void Map::setTexture(char type, sf::Texture newTexture){
+	if (type == 'E'){
+		enemy = newTexture;
+	}else if (type == 'P'){
+		player = newTexture;
+	}
+}
 //prints map layout (test method)
 void Map::printLayout(){
 	for (int i=0; i<height; i++){

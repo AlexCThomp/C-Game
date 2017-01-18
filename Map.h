@@ -39,6 +39,9 @@ class Map{
 	
 	//set player texture
 	void setPlayer(string);
+
+	//set selected texture
+	void setTexture(char,sf::Texture);
 	
 	//prints layout to terminal (test method)
 	void printLayout();

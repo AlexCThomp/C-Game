@@ -7,10 +7,22 @@
 #include <iostream>
 
 //constructor sets player position on map
-Player:: Player(Map &newMap, char tile,float newSpeed, int x, int y)
+Player:: Player(Map &newMap, char tile,float newSpeed, int x, int y,
+				string newUpT, string newRightT, string newDownT, string newLeftT)
 	:map(newMap)
 {
-	
+	if (!upT.loadFromFile(newUpT)){
+		cout << "Error loading player up texture!";
+	}
+	if (!rightT.loadFromFile(newRightT)){
+		cout << "Error loading player right texture!";
+	}
+	if (!downT.loadFromFile(newDownT)){
+		cout << "Error loading player down texture!";
+	}
+	if (!leftT.loadFromFile(newLeftT)){
+		cout << "Error loading player left texture!";
+	}
 	this->x = x;
 	this->y = y;
 	direction = none;
@@ -25,6 +37,10 @@ Player:: Player(Map &newMap, char tile,float newSpeed, int x, int y)
 int Player::getX(){return x;}
 int Player::getY(){return y;}
 Player::Direction Player::getDirection(){return direction;}
+sf::Texture Player::getUpTexture(){return upT;}
+sf::Texture Player::getRightTexture(){return rightT;}
+sf::Texture Player::getDownTexture(){return downT;}
+sf::Texture Player::getLeftTexture(){return leftT;}
 
 //set Methods
 void Player::setDirection(Direction newDirection){
@@ -73,22 +89,22 @@ void Player:: move(){
 	switch (direction){
 		case left:
 			move(-1,0);
-			map.setPlayer("leftPlayer.png");
+			map.setTexture(layoutTile,leftT);
 			break;
 			
 		case up:
 			move(0,-1);
-			map.setPlayer("forwardPlayer.png");
+			map.setTexture(layoutTile,upT);
 			break;
 			
 		case right:	
 			move(1,0);
-			map.setPlayer("rightPlayer.png");
+			map.setTexture(layoutTile,rightT);
 			break;
 	
 		case down:
 			move(0,1);
-			map.setPlayer("backwardPlayer.png");
+			map.setTexture(layoutTile,downT);
 			break;
 			
 		default:
