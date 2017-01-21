@@ -1,4 +1,4 @@
-OBJS = Map.o Player.o GameMain.o
+OBJS = Map.o Player.o Tile.o GameMain.o
 CFLAGS = -Wall -c -std=c++0x
 
 
@@ -10,8 +10,11 @@ GameMain.o: GameMain.cpp Map.h Player.h
 	
 Map.o: Map.cpp Map.h
 	g++ $(CFLAGS) Map.cpp -o Map.o
+
+Tile.o: Tile.cpp Tile.h
+	g++ $(CFLAGS) Tile.cpp -o Tile.o
 	
-Player.o: Player.cpp Map.h Player.h
+Player.o: Player.cpp Map.h Tile.h Player.h
 	g++ $(CFLAGS) Player.cpp -o Player.o
 	
 clean:

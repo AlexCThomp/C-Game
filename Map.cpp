@@ -29,6 +29,9 @@ Map::Map(int a,int b,string mapFile, string wallFile, string groundFile,
 	if (!enemy.loadFromFile(enemyFile)){
 		cout << "Error loading enemyFile";
 	}
+	if (!corpse.loadFromFile("dead-player.png")){
+		cout << "Error loading corpseFile";
+	}
 	
 	layout = new char*[height];
 	for (int i=0; i < height; i++){
@@ -43,7 +46,7 @@ Map::Map(int a,int b,string mapFile, string wallFile, string groundFile,
 				file.get(c);
 				if (c != '\n'){
 					layout [i][j] = c;
-				}
+				}else{j--;}
 			}
 		}
 	}
@@ -129,6 +132,10 @@ void Map::drawMap(sf::RenderWindow &window){
 					
 				case 'E':
 					spriteLayout[i][j].setTexture(enemy);
+					break;
+
+				case 'C':
+					spriteLayout[i][j].setTexture(corpse);
 					break;
 					
 				default:

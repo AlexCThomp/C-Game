@@ -12,7 +12,7 @@ using namespace std;
 class Map{
 	private:
 	int height, width;
-	sf::Texture wall,ground,player,enemy;
+	sf::Texture wall,ground,player,enemy,corpse;
 	char** layout;
 	
 	public:

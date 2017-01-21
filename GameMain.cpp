@@ -38,60 +38,21 @@ int main()
 				case sf::Event::Closed: //user closed window
 					window.close();
 					break;
-					
-				case sf::Event::KeyPressed: //user pressed a key
-					switch (event.key.code){
-						case sf::Keyboard::Left: //left arrow
-							player.setDirection(Player::left);
-							break;
-							
-						case sf::Keyboard::Up: //up arrow
-							player.setDirection(Player::up);
-							break;
-							
-						case sf::Keyboard::Right: //right arrow
-							player.setDirection(Player::right);
-							break;
-							
-						case sf::Keyboard::Down: //down arrow
-							player.setDirection(Player::down);
-							break;
-							
-						default:
-							break;
-					}
-					break;
-				
-				case sf::Event::KeyReleased: 
-					switch (event.key.code){
-						case sf::Keyboard::Left: //left arrow
-							player.setDirection(Player::none);
-							break;
-							
-						case sf::Keyboard::Up: //up arrow
-							player.setDirection(Player::none);
-							break;
-							
-						case sf::Keyboard::Right: //right arrow
-							player.setDirection(Player::none);
-							break;
-							
-						case sf::Keyboard::Down: //down arrow
-							player.setDirection(Player::none);
-							break;
-							
-						default:
-							break;	
-						}
 				
 				default:
 					break;
 				
 			}
-			
 		}
-		player.move();
-		enemy.target(player);
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){player.move(Player::up);}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){player.move(Player::right);}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){player.move(Player::down);}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){player.move(Player::left);}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){player.attack();}
+
+		if (enemy.getStatus() == Player::alive){enemy.target(player);}
+		if (enemy.getTime() > 10.f){enemy.setStatus(Player::alive);}
 		map.drawMap(window);
 		window.display();
 

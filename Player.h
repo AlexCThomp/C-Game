@@ -5,19 +5,21 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include "Map.h"
+#include "Tile.h"
 #include <SFML/Graphics.hpp>
 
-class Player{
+class Player : public Tile{
 	public:
-	enum Direction{up,right,down,left,none};
+	enum Direction{up=1,right,down,left,none};
+	enum Status{alive,dead};
 	
 	private:
 	Map &map;
 	Direction direction;
+	Status status;
 	sf::Clock clock;
 	sf::Texture upT,rightT,downT,leftT;
-	float speed;
-	int x,y;
+	float speed, attackSpeed;
 	char standingOn;
 	char layoutTile;
 	
@@ -27,21 +29,28 @@ class Player{
 	//get methods
 	int getX();
 	int getY();
+	char inFront();
 	Direction getDirection();
+	Status getStatus();
 	sf::Texture getUpTexture();
 	sf::Texture getRightTexture();
 	sf::Texture getDownTexture();
 	sf::Texture getLeftTexture();
+	float getTime();
 	
 	
 	//set methods
 	void setDirection(Direction);
-	
+	void setStatus(Status);
+
+	//other methods
 	void move(int,int);
-	void move();
+	void move(Direction);
 	
 	void target(int,int);
 	void target(Player);
+
+	void attack();
 };
 
 
