@@ -102,16 +102,11 @@ void Map::printLayout(){
 
 void Map::drawMap(sf::RenderWindow &window){
 	
-	sf::Sprite** spriteLayout;
+	sf::Sprite spriteLayout[height][width];
 	int screenWidth = window.getSize().x;
 	int screenHeight = window.getSize().y;
 	float resScaleY = (float) screenHeight / 1080.f; 
 	float resScaleX = (float) screenWidth / 1920.f;
-	
-	spriteLayout = new sf::Sprite* [height];
-	for (int i=0; i<height; i++){
-		spriteLayout[i] = new sf::Sprite [width];
-	}
 	
 	for (int i=0; i<height; i++){
 		for (int j=0; j<width; j++){

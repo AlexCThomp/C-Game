@@ -2,6 +2,7 @@
 //AUTHOR: ALEXANDER THOMPSON and maybe Steve?
 //VERSION: 6/1/2017
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include "Map.h"
 #include "Player.h"
@@ -26,7 +27,14 @@ int main()
 	
 	
 	sf::Clock clock;
+	sf::Music music;
 	
+	if (!music.openFromFile("warofgods.ogg")){
+		cout << "music error";
+		return -1;
+	}
+	music.setLoop(true);
+	music.play();
 	while(window.isOpen()){
 	
 		
@@ -36,6 +44,7 @@ int main()
 			switch (event.type){
 				
 				case sf::Event::Closed: //user closed window
+					music.stop();
 					window.close();
 					break;
 				
