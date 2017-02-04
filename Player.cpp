@@ -96,7 +96,7 @@ char Player::look(Direction facing){
 //in a pathMap
 Player::Direction Player::adjacentPath(Direction** pathMap, int targetX, int targetY){
 
-	Direction above,below,left,right;
+	Direction above,below,toLeft,toRight;
 	//char tileAbove, tileBelow, tileLeft, tileRight;
 	
 	if (targetX == 0 || targetY == 0 || targetX >= map.getWidth()-1 ||
@@ -111,14 +111,16 @@ Player::Direction Player::adjacentPath(Direction** pathMap, int targetX, int tar
 	
 	above = pathMap[targetY-1][targetX];
 	below = pathMap[targetY+1][targetX];
-	left = pathMap[targetY][targetX-1];
-	right = pathMap[targetY][targetX+1];
+	toLeft = pathMap[targetY][targetX-1];
+	toRight = pathMap[targetY][targetX+1];
 
 	
+	
+	
 	if (above != none){return above;}
+	else if (toRight !=none){return toRight;}
 	else if (below != none){return below;}
-	else if (left != none){return left;}
-	else if (right !=none){return right;}
+	else if (toLeft != none){return toLeft;}
 	else{return none;}
 	
 	}
@@ -183,17 +185,38 @@ void Player:: target(int tX, int tY){
 		if (map.getTile(x-1,y) == '_'){
 			pathMap[y][x-1] = left;
 		}
+
+		//THE LOGIC HERE IS FLAWED THIS IS WHERE THE PROBLEM IS{
 		while((sourceDirection = adjacentPath(pathMap,tX,tY)) == none){
 			for(int i = 0; i < map.getHeight(); i++){
 				for(int j = 0; j < map.getWidth(); j++){
 					if (pathMap[i][j] != none){
-						if(map.getTile(j,i-1) == '_'){pathMap[i-1][j] = pathMap[i][j];}
-						if(map.getTile(j,i+1) == '_'){pathMap[i+1][j] = pathMap[i][j];}
-						if(map.getTile(j-1,i) == '_'){pathMap[i][j-1] = pathMap[i][j];}
-						if(map.getTile(j+1,i) == '_'){pathMap[i][j+1] = pathMap[i][j];}
+						if(map.getTile(j,i-1) == '_' && pathMap[i-1][j] == none){
+							pathMap[i-1][j] = pathMap[i][j];
+						}
+						if(map.getTile(j,i+1) == '_' && pathMap[i+1][j] == none){
+							pathMap[i+1][j] = pathMap[i][j];
+						}
+						if(map.getTile(j-1,i) == '_' && pathMap[i][j-1] == none){
+							pathMap[i][j-1] = pathMap[i][j];
+						}
+						if(map.getTile(j+1,i) == '_' && pathMap[i][j+1] == none){
+							pathMap[i][j+1] = pathMap[i][j];
+							j++;
+						}
+						
 						
 					}
 				}
+			}
+		}
+		//}
+		
+		cout << "\n";
+		for(int i = 0; i < map.getHeight(); i++){
+			cout << "\n";
+			for(int j = 0; j < map.getWidth(); j++){
+				printf("%d", pathMap[i][j]);
 			}
 		}
 		
@@ -203,7 +226,7 @@ void Player:: target(int tX, int tY){
 		delete [] pathMap;
 		pathMap = 0;
 		move(sourceDirection);
-	}else {move(direction);}
+	}else {move(none);}
 	
 
 	
@@ -290,6 +313,7 @@ void Player:: move(Direction newDirection){
 				break;
 			
 			default:
+				move(0,0);
 				break;
 		}
 	}else{

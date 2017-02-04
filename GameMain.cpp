@@ -23,7 +23,7 @@ int main()
 	
 	for (int i = 0; i < enemyCount; i++){
 		
-		enemy.emplace_back(map, 'E',0.25f,"test-enemy.png","test-enemy.png",
+		enemy.emplace_back(map, 'E',0.15f,"test-enemy.png","test-enemy.png",
 						"test-enemy.png","test-enemy.png");
 	}
 	
