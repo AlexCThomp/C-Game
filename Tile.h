@@ -5,6 +5,7 @@
 #define TILE_H
 #include <string>
 #include <SFML/Graphics.hpp>
+#include "Map.h"
 
 using namespace std;
 
@@ -15,6 +16,7 @@ class Tile{
 
 	public:
 	Tile(int,int,string);
+	Tile(Map&,char,string);
 	//get methods
 	int getX();
 	int getY();

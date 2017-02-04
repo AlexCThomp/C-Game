@@ -33,6 +33,34 @@ Player:: Player(Map &newMap, char tile,float newSpeed, int x, int y,
 	map.setTile(x,y,layoutTile);
 }
 
+Player:: Player(Map& newMap,char tile,float newSpeed,string newUpT,
+				string newRightT, string newDownT, string newLeftT)
+	:Tile(newMap,tile,newUpT), map(newMap){
+
+	if (!upT.loadFromFile(newUpT)){
+		cout << "Error loading player up texture!";
+	}
+	if (!rightT.loadFromFile(newRightT)){
+		cout << "Error loading player right texture!";
+	}
+	if (!downT.loadFromFile(newDownT)){
+		cout << "Error loading player down texture!";
+	}
+	if (!leftT.loadFromFile(newLeftT)){
+		cout << "Error loading player left texture!";
+	}
+	direction = none;
+	status = alive;
+	clock.restart();
+	speed = newSpeed;
+	attackSpeed = 0.05f;
+	layoutTile = tile;
+	standingOn = '_';
+	map.setTile(x,y,layoutTile);
+} 
+	
+
+
 //get Methods
 Player::Direction Player::getDirection(){return direction;}
 Player::Status Player::getStatus(){return status;}
@@ -41,10 +69,15 @@ sf::Texture Player::getRightTexture(){return rightT;}
 sf::Texture Player::getDownTexture(){return downT;}
 sf::Texture Player::getLeftTexture(){return leftT;}
 float Player::getTime(){return clock.getElapsedTime().asSeconds();}
+char Player::getLayoutTile(){return layoutTile;}
 
 //returns tile in front of player
 char Player::inFront(){
-	switch (direction){
+	return look(direction);
+}
+
+char Player::look(Direction facing){
+	switch (facing){
 		case up:
 			return map.getTile(x,y-1);
 		case right:
@@ -57,6 +90,38 @@ char Player::inFront(){
 			return layoutTile;
 	}
 }
+
+//helper method for target(int,int)
+//returns direction that is adjacent to input coordinates
+//in a pathMap
+Player::Direction Player::adjacentPath(Direction** pathMap, int targetX, int targetY){
+
+	Direction above,below,left,right;
+	//char tileAbove, tileBelow, tileLeft, tileRight;
+	
+	if (targetX == 0 || targetY == 0 || targetX >= map.getWidth()-1 ||
+		targetY >= map.getHeight()-1){return none;}
+
+	/*
+	tileAbove = map.getTile(targetX, targetY-1);
+	tileRight = map.getTile(targetX+1, targetY);
+	tileBelow = map.getTile(targetX, targetY+1);
+	tileLeft = map.getTile(targetX-1, targetY);
+	*/
+	
+	above = pathMap[targetY-1][targetX];
+	below = pathMap[targetY+1][targetX];
+	left = pathMap[targetY][targetX-1];
+	right = pathMap[targetY][targetX+1];
+
+	
+	if (above != none){return above;}
+	else if (below != none){return below;}
+	else if (left != none){return left;}
+	else if (right !=none){return right;}
+	else{return none;}
+	
+	}
 //set Methods
 void Player::setDirection(Direction newDirection){
 	direction = newDirection;
@@ -81,30 +146,111 @@ void Player::setDirection(Direction newDirection){
 void Player:: setStatus(Status newStatus){
 	status = newStatus;
 	if (status == dead){layoutTile = 'C';}
-	else if (status == alive){layoutTile = 'E';}
+	else if (status == alive){
+		layoutTile = 'E';
+		map.setTile(x,y,layoutTile);
+	}
 	clock.restart();
 }
 //makes a move towards the inputted coordinates
 void Player:: target(int tX, int tY){
+
+	int distance = abs(x - tX) + abs(y - tY);
+	if (distance > 1){
+		Player::Direction sourceDirection;
+		Player::Direction** pathMap;
+		
+		pathMap = new Direction*[map.getHeight()];
+		for (int i=0; i < map.getHeight(); i++){
+			pathMap[i] = new Direction[map.getWidth()];
+		}
+		
+		for(int i = 0; i < map.getHeight(); i++){
+			for(int j = 0; j < map.getWidth(); j++){
+		
+				pathMap[i][j] = none;
+			}
+		}
+		if (map.getTile(x,y-1) == '_'){
+			pathMap[y-1][x] = up;
+		}
+		if (map.getTile(x+1,y) == '_'){
+			pathMap[y][x+1] = right;
+		}
+		if (map.getTile(x,y+1) == '_'){
+			pathMap[y+1][x] = down;
+		}
+		if (map.getTile(x-1,y) == '_'){
+			pathMap[y][x-1] = left;
+		}
+		while((sourceDirection = adjacentPath(pathMap,tX,tY)) == none){
+			for(int i = 0; i < map.getHeight(); i++){
+				for(int j = 0; j < map.getWidth(); j++){
+					if (pathMap[i][j] != none){
+						if(map.getTile(j,i-1) == '_'){pathMap[i-1][j] = pathMap[i][j];}
+						if(map.getTile(j,i+1) == '_'){pathMap[i+1][j] = pathMap[i][j];}
+						if(map.getTile(j-1,i) == '_'){pathMap[i][j-1] = pathMap[i][j];}
+						if(map.getTile(j+1,i) == '_'){pathMap[i][j+1] = pathMap[i][j];}
+						
+					}
+				}
+			}
+		}
+		
+		for(int i = 0; i < map.getHeight(); i++){
+			delete [] pathMap[i];
+		}
+		delete [] pathMap;
+		pathMap = 0;
+		move(sourceDirection);
+	}else {move(direction);}
 	
+
+	
+
+	
+
+	
+
+	/*
 	int xDist = x - tX;
 	int yDist = y - tY;
-	
-	if (((abs(xDist) < 15) && (abs(yDist) < 15))&&
-	(clock.getElapsedTime().asSeconds() > speed)){
+	int randDir;
+	Direction xDirection, yDirection;
+	char xInFront, yInFront;
+
+	if (abs(xDist) != 0 || abs(yDist) != 0){
 		
-		if (abs(xDist) >= abs(yDist)){
-			direction = ((xDist > 0) ? left:right);
-		}else{ 
-			direction = ((yDist > 0) ? up:down);
-		}		
+		if (((abs(xDist) < 50) && (abs(yDist) < 50))&&
+		(clock.getElapsedTime().asSeconds() > speed)){
+
+			randDir = rand() % 2;
+			xDirection = ((xDist > 0) ? left:right);
+			yDirection = ((yDist > 0) ? up:down);
+			xInFront = look(xDirection);
+			yInFront = look(yDirection);
+
+			if (abs(xDist)!= 0 && randDir == 0){
+				if(xInFront == '_'){move(xDirection);}
+				else{move(up);}
+			}else if (abs(yDist)!= 0 && randDir == 1){
+				if (yInFront == '_'){move(yDirection);}
+				else{move(left);}
+			}
+		}
+		else {
+			Direction randomDirection = static_cast<Direction>((rand() % 5)+1);
+			move(randomDirection);
+		}
 	}
-	move(direction);
+	*/
 }
 
 //makes move towards inputted target
 void Player:: target(Player myTarget){
-	this->target(myTarget.x, myTarget.y);
+	if (inFront() == myTarget.getLayoutTile()){
+		move(direction);
+	}else{target(myTarget.Tile::getX(), myTarget.Tile::getY());}
 }
 //moves player X tiles horizontally and Y tiles vertically
 void Player:: move(int newX, int newY){
@@ -124,7 +270,8 @@ void Player:: move(int newX, int newY){
 
 void Player:: move(Direction newDirection){
 	
-	if (newDirection == direction){
+	if (newDirection == direction || layoutTile != 'P'){
+		direction = newDirection;
 		switch (newDirection){
 			case left:
 				move(-1,0);

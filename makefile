@@ -11,7 +11,7 @@ GameMain.o: GameMain.cpp Map.h Player.h
 Map.o: Map.cpp Map.h
 	g++ $(CFLAGS) Map.cpp -o Map.o
 
-Tile.o: Tile.cpp Tile.h
+Tile.o: Tile.cpp Tile.h Map.h
 	g++ $(CFLAGS) Tile.cpp -o Tile.o
 	
 Player.o: Player.cpp Map.h Tile.h Player.h

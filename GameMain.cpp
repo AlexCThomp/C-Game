@@ -1,23 +1,32 @@
 //GameMain.cpp
-//AUTHOR: ALEXANDER THOMPSON and maybe Steve?
+//AUTHOR: ALEXANDER THOMPSON
 //VERSION: 6/1/2017
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <iostream>
 #include "Map.h"
 #include "Player.h"
+#include <vector>
 
 int main()
 {	
 	
+	int enemyCount;
+	std::vector<Player> enemy;
 	
 	sf::VideoMode resolution = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(resolution, "test");
 	Map map("testMap.txt", "test-wall.png", "test-ground.png", "forwardPlayer.png", "test-enemy.png");
-	Player player(map,'P',0.1f,30,16,
-	"forwardPlayer.png","rightPlayer.png","backwardPlayer.png","leftPlayer.png");
-	Player enemy(map, 'E',0.25f,1,1,
-	"test-enemy.png","test-enemy.png","test-enemy.png","test-enemy.png");
+	Player player(map,'P',0.1f,"forwardPlayer.png","rightPlayer.png",
+				 "backwardPlayer.png","leftPlayer.png");
+	enemyCount = map.getEnemyCount();
+	
+	for (int i = 0; i < enemyCount; i++){
+		
+		enemy.emplace_back(map, 'E',0.25f,"test-enemy.png","test-enemy.png",
+						"test-enemy.png","test-enemy.png");
+	}
+	
 	window.clear(sf::Color::Black);
 	map.drawMap(window);
 	map.printLayout();
@@ -27,14 +36,14 @@ int main()
 	
 	
 	sf::Clock clock;
-	sf::Music music;
+	/*sf::Music music;
 	
 	if (!music.openFromFile("warofgods.ogg")){
 		cout << "music error";
 		return -1;
 	}
 	music.setLoop(true);
-	music.play();
+	music.play();*/
 	while(window.isOpen()){
 	
 		
@@ -44,7 +53,7 @@ int main()
 			switch (event.type){
 				
 				case sf::Event::Closed: //user closed window
-					music.stop();
+					//music.stop();
 					window.close();
 					break;
 				
@@ -60,8 +69,10 @@ int main()
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){player.move(Player::left);}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){player.attack();}
 
-		if (enemy.getStatus() == Player::alive){enemy.target(player);}
-		if (enemy.getTime() > 10.f){enemy.setStatus(Player::alive);}
+		for (int i = 0; i < enemyCount; i++){
+			if (enemy[i].getStatus() == Player::alive){enemy[i].target(player);}
+			if (enemy[i].getTime() > 10.f){enemy[i].setStatus(Player::alive);}
+		}
 		map.drawMap(window);
 		window.display();
 

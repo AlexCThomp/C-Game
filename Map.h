@@ -11,7 +11,7 @@ using namespace std;
 
 class Map{
 	private:
-	int height, width;
+	int height, width, enemyCount;
 	sf::Texture wall,ground,player,enemy,corpse;
 	char** layout;
 	
@@ -33,6 +33,7 @@ class Map{
 	sf::Texture getPlayer();
 	int getWidth();
 	int getHeight();
+	int getEnemyCount();
 	
 	//Set methods
 	void setTile(int,int,char);

@@ -16,7 +16,7 @@ Map::Map(int a,int b,string mapFile, string wallFile, string groundFile,
 													string playerFile, string enemyFile){
 	width  = a;
 	height = b;
-	
+	enemyCount = 0;
 	if (!wall.loadFromFile(wallFile)){
 		cout << "Error loading wall texture!";
 	}
@@ -46,6 +46,7 @@ Map::Map(int a,int b,string mapFile, string wallFile, string groundFile,
 				file.get(c);
 				if (c != '\n'){
 					layout [i][j] = c;
+					if (c == 'e'){ enemyCount++;}
 				}else{j--;}
 			}
 		}
@@ -67,6 +68,7 @@ sf::Texture Map::getGround(){return ground;}
 sf::Texture Map::getPlayer(){return player;}
 int Map::getWidth(){return width;}
 int Map::getHeight(){return height;}
+int Map::getEnemyCount(){return enemyCount;}
 
 //set Methods
 

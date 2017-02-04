@@ -25,11 +25,14 @@ class Player : public Tile{
 	
 	public:
 	Player(Map&,char,float,int,int,string,string,string,string);
+	Player(Map&,char,float,string,string,string,string);
 	
 	//get methods
 	int getX();
 	int getY();
 	char inFront();
+	char look(Direction);
+	char getLayoutTile();
 	Direction getDirection();
 	Status getStatus();
 	sf::Texture getUpTexture();
@@ -37,6 +40,7 @@ class Player : public Tile{
 	sf::Texture getDownTexture();
 	sf::Texture getLeftTexture();
 	float getTime();
+	Direction adjacentPath(Direction**,int,int);
 	
 	
 	//set methods
