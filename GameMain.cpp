@@ -12,11 +12,12 @@ int main()
 {	
 	
 	int enemyCount;
+	string mapFile = "testMap.txt";
 	std::vector<Player> enemy;
 	
 	sf::VideoMode resolution = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(resolution, "test");
-	Map map("testMap.txt", "test-wall.png", "test-ground.png", "forwardPlayer.png", "test-enemy.png");
+	Map map(mapFile, "test-wall.png", "test-ground.png", "forwardPlayer.png", "test-enemy.png");
 	Player player(map,'P',0.1f,"forwardPlayer.png","rightPlayer.png",
 				 "backwardPlayer.png","leftPlayer.png");
 	enemyCount = map.getEnemyCount();
@@ -73,6 +74,25 @@ int main()
 			if (enemy[i].getStatus() == Player::alive){enemy[i].target(player);}
 			if (enemy[i].getTime() > 10.f){enemy[i].setStatus(Player::alive);}
 		}
+
+		player.detectHit();
+		for (int i = 0; i < enemyCount; i++){
+				enemy[i].detectHit();
+		}
+		if (player.getStatus() == Player::dead){
+			map.setLayout("death.txt");
+			clock.restart();
+			map.drawMap(window);
+			window.display();
+			while(clock.getElapsedTime().asSeconds() < 3.0f){}
+			map.setLayout(mapFile);
+			player.reset();
+			player.setStatus(Player::alive);
+			for (int i = 0; i < enemyCount; i++){
+				enemy[i].reset();
+			}
+		}
+		map.printLayout();
 		map.drawMap(window);
 		window.display();
 

@@ -29,6 +29,7 @@ Player:: Player(Map &newMap, char tile,float newSpeed, int x, int y,
 	speed = newSpeed;
 	attackSpeed = 0.05f;
 	layoutTile = tile;
+	type = tile;
 	standingOn = map.getTile(x,y);
 	map.setTile(x,y,layoutTile);
 }
@@ -53,8 +54,9 @@ Player:: Player(Map& newMap,char tile,float newSpeed,string newUpT,
 	status = alive;
 	clock.restart();
 	speed = newSpeed;
-	attackSpeed = 0.05f;
+	attackSpeed = 0.3f;
 	layoutTile = tile;
+	type = tile;
 	standingOn = '_';
 	map.setTile(x,y,layoutTile);
 } 
@@ -94,7 +96,7 @@ char Player::look(Direction facing){
 //helper method for target(int,int)
 //returns direction that is adjacent to input coordinates
 //in a pathMap
-Player::Direction Player::adjacentPath(Direction** pathMap, int targetX, int targetY){
+Player::Direction Player::adjacentPath(Direction** adjMap, int targetX, int targetY){
 
 	Direction above,below,toLeft,toRight;
 	//char tileAbove, tileBelow, tileLeft, tileRight;
@@ -109,13 +111,11 @@ Player::Direction Player::adjacentPath(Direction** pathMap, int targetX, int tar
 	tileLeft = map.getTile(targetX-1, targetY);
 	*/
 	
-	above = pathMap[targetY-1][targetX];
-	below = pathMap[targetY+1][targetX];
-	toLeft = pathMap[targetY][targetX-1];
-	toRight = pathMap[targetY][targetX+1];
+	above = adjMap[targetY-1][targetX];
+	below = adjMap[targetY+1][targetX];
+	toLeft = adjMap[targetY][targetX-1];
+	toRight = adjMap[targetY][targetX+1];
 
-	
-	
 	
 	if (above != none){return above;}
 	else if (toRight !=none){return toRight;}
@@ -149,148 +149,147 @@ void Player:: setStatus(Status newStatus){
 	status = newStatus;
 	if (status == dead){layoutTile = 'C';}
 	else if (status == alive){
-		layoutTile = 'E';
-		map.setTile(x,y,layoutTile);
+		layoutTile = type;
+		map.setTile(x,y,type);
 	}
 	clock.restart();
 }
+
+void Player:: reset(){
+	int mapWidth = map.getWidth();
+	int mapHeight = map.getHeight();
+	
+	for (int i = 0; i < mapHeight; i++){
+		for (int j = 0; j < mapWidth; j++){
+			if (map.getLayout()[i][j] == tolower(type)){
+				x = j;
+				y = i;
+				map.setTile(x,y,type);
+				j = mapWidth;
+				i = mapHeight;
+				
+			}
+		}
+	}
+	setStatus(alive);
+}
+
 //makes a move towards the inputted coordinates
 void Player:: target(int tX, int tY){
 
 	int distance = abs(x - tX) + abs(y - tY);
-	if (distance > 1){
-		Player::Direction sourceDirection;
-		Player::Direction** pathMap;
-		
-		pathMap = new Direction*[map.getHeight()];
-		for (int i=0; i < map.getHeight(); i++){
-			pathMap[i] = new Direction[map.getWidth()];
-		}
-		
-		for(int i = 0; i < map.getHeight(); i++){
-			for(int j = 0; j < map.getWidth(); j++){
-		
-				pathMap[i][j] = none;
+	if (clock.getElapsedTime().asSeconds() > speed){
+		if(1 < distance){
+			Player::Direction sourceDirection;
+			Player::Direction** pathMap;
+			
+			pathMap = new Direction*[map.getHeight()];
+			for (int i=0; i < map.getHeight(); i++){
+				pathMap[i] = new Direction[map.getWidth()];
 			}
-		}
-		if (map.getTile(x,y-1) == '_'){
-			pathMap[y-1][x] = up;
-		}
-		if (map.getTile(x+1,y) == '_'){
-			pathMap[y][x+1] = right;
-		}
-		if (map.getTile(x,y+1) == '_'){
-			pathMap[y+1][x] = down;
-		}
-		if (map.getTile(x-1,y) == '_'){
-			pathMap[y][x-1] = left;
-		}
-
-		//THE LOGIC HERE IS FLAWED THIS IS WHERE THE PROBLEM IS{
-		while((sourceDirection = adjacentPath(pathMap,tX,tY)) == none){
+			
 			for(int i = 0; i < map.getHeight(); i++){
 				for(int j = 0; j < map.getWidth(); j++){
-					if (pathMap[i][j] != none){
-						if(map.getTile(j,i-1) == '_' && pathMap[i-1][j] == none){
-							pathMap[i-1][j] = pathMap[i][j];
-						}
-						if(map.getTile(j,i+1) == '_' && pathMap[i+1][j] == none){
-							pathMap[i+1][j] = pathMap[i][j];
-						}
-						if(map.getTile(j-1,i) == '_' && pathMap[i][j-1] == none){
-							pathMap[i][j-1] = pathMap[i][j];
-						}
-						if(map.getTile(j+1,i) == '_' && pathMap[i][j+1] == none){
-							pathMap[i][j+1] = pathMap[i][j];
-							j++;
-						}
-						
-						
-					}
+			
+					pathMap[i][j] = none;
 				}
 			}
-		}
-		//}
-		
-		cout << "\n";
-		for(int i = 0; i < map.getHeight(); i++){
+			if (map.getTile(x,y-1) != '#'){
+				pathMap[y-1][x] = up;
+			}
+			if (map.getTile(x+1,y) != '#'){
+				pathMap[y][x+1] = right;
+			}
+			if (map.getTile(x,y+1) != '#'){
+				pathMap[y+1][x] = down;
+			}
+			if (map.getTile(x-1,y) != '#'){
+				pathMap[y][x-1] = left;
+			}
+	
+			//with multiple enemies it gets stuck here (loops infinitely)
+			int forceBreak = 0;
+			while((sourceDirection = adjacentPath(pathMap,tX,tY)) == none && forceBreak < 500){
+				for(int y = 0; y < map.getHeight(); y++){
+					for(int x = 0; x < map.getWidth(); x++){
+						if (pathMap[y][x] != none){
+							if(map.getTile(x,y-1) != '#' && pathMap[y-1][x] == none){
+								pathMap[y-1][x] = pathMap[y][x];
+							}
+							if(map.getTile(x,y+1) != '#' && pathMap[y+1][x] == none){
+								pathMap[y+1][x] = pathMap[y][x];
+							}
+							if(map.getTile(x-1,y) != '#' && pathMap[y][x-1] == none){
+								pathMap[y][x-1] = pathMap[y][x];
+							}
+							if(map.getTile(x+1,y) != '#' && pathMap[y][x+1] == none){
+								pathMap[y][x+1] = pathMap[y][x];
+								x++;
+							}
+							
+							
+						}
+					}
+				}
+				forceBreak++;
+			}
+			
+	
+			/*
 			cout << "\n";
-			for(int j = 0; j < map.getWidth(); j++){
-				printf("%d", pathMap[i][j]);
+			for(int i = 0; i < map.getHeight(); i++){
+				cout << "\n";
+				for(int j = 0; j < map.getWidth(); j++){
+					printf("%d", pathMap[i][j]);
+				}
 			}
-		}
-		
-		for(int i = 0; i < map.getHeight(); i++){
-			delete [] pathMap[i];
-		}
-		delete [] pathMap;
-		pathMap = 0;
-		move(sourceDirection);
-	}else {move(none);}
-	
-
-	
-
-	
-
-	
-
-	/*
-	int xDist = x - tX;
-	int yDist = y - tY;
-	int randDir;
-	Direction xDirection, yDirection;
-	char xInFront, yInFront;
-
-	if (abs(xDist) != 0 || abs(yDist) != 0){
-		
-		if (((abs(xDist) < 50) && (abs(yDist) < 50))&&
-		(clock.getElapsedTime().asSeconds() > speed)){
-
-			randDir = rand() % 2;
-			xDirection = ((xDist > 0) ? left:right);
-			yDirection = ((yDist > 0) ? up:down);
-			xInFront = look(xDirection);
-			yInFront = look(yDirection);
-
-			if (abs(xDist)!= 0 && randDir == 0){
-				if(xInFront == '_'){move(xDirection);}
-				else{move(up);}
-			}else if (abs(yDist)!= 0 && randDir == 1){
-				if (yInFront == '_'){move(yDirection);}
-				else{move(left);}
+			*/
+			for(int i = 0; i < map.getHeight(); i++){
+				delete [] pathMap[i];
 			}
+			delete [] pathMap;
+			pathMap = 0;
+			move(sourceDirection);
+			
+		}else{
+			if (x < tX){direction = right;}
+			else if (x > tX){direction = left;}
+			else if (y < tY){direction = down;}
+			else if (y > tY){direction = up;}
 		}
-		else {
-			Direction randomDirection = static_cast<Direction>((rand() % 5)+1);
-			move(randomDirection);
-		}
-	}
-	*/
+			
+	}	
 }
 
 //makes move towards inputted target
 void Player:: target(Player myTarget){
 	if (inFront() == myTarget.getLayoutTile()){
-		move(direction);
+		attack();
 	}else{target(myTarget.Tile::getX(), myTarget.Tile::getY());}
 }
 //moves player X tiles horizontally and Y tiles vertically
 void Player:: move(int newX, int newY){
-	if(map.getTile(x,y) == '#'){
-		setStatus(dead);
-		map.setTile(x,y,layoutTile);
-	}else if ((map.getTile(x + newX, y + newY) == '_') &&
-	clock.getElapsedTime().asSeconds() > speed){
-		map.setTile(x, y, standingOn);
-		x += newX;
-		y += newY;
-		standingOn = map.getTile(x, y);
-		map.setTile(x,y,layoutTile);
+
+	if (clock.getElapsedTime().asSeconds() > speed){
 		clock.restart();
+		if ((map.getTile(x + newX, y + newY) == '_')){
+		
+			map.setTile(x, y, standingOn);
+			x += newX;
+			y += newY;
+			standingOn = map.getTile(x, y);
+			map.setTile(x,y,layoutTile);
+			clock.restart();
+		}
 	}
 }
-
+//checks to see if the player was hit
+void Player:: detectHit(){
+if(map.getTile(x,y) == '#'){
+		setStatus(dead);
+		map.setTile(x,y,layoutTile);
+	}
+}
 void Player:: move(Direction newDirection){
 	
 	if (newDirection == direction || layoutTile != 'P'){
@@ -323,8 +322,9 @@ void Player:: move(Direction newDirection){
 }
 
 void Player:: attack(){
+	
 	if (clock.getElapsedTime().asSeconds() > attackSpeed){
-		if (inFront() == 'E'){
+		if (inFront() == 'E' || inFront() == 'P'){
 			switch (direction){
 				case up:
 					map.setTile(x,y-1,'#');
@@ -342,8 +342,10 @@ void Player:: attack(){
 					break;
 			}
 		}
+		clock.restart();
 	}
-	clock.restart();
+	
+	
 }
 				
 

@@ -37,6 +37,7 @@ class Map{
 	
 	//Set methods
 	void setTile(int,int,char);
+	void setLayout(string);
 	
 	//set player texture
 	void setPlayer(string);

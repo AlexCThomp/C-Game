@@ -11,7 +11,8 @@
 class Player : public Tile{
 	public:
 	enum Direction{up=1,right,down,left,none};
-	enum Status{alive,dead};
+	enum Status{dead,alive};
+	char type;
 	
 	private:
 	Map &map;
@@ -46,6 +47,8 @@ class Player : public Tile{
 	//set methods
 	void setDirection(Direction);
 	void setStatus(Status);
+	void reset();
+	void detectHit();
 
 	//other methods
 	void move(int,int);

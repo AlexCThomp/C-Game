@@ -77,6 +77,25 @@ void Map:: setTile(int x, int y, char c){
 	layout[y][x] = c;
 }
 
+void Map:: setLayout(string mapFile){
+
+	ifstream file(mapFile);
+	char c;
+	if (file.is_open()){
+		for (int i=0; i<height; i++){
+			for (int j=0; j<width; j++){
+				file.get(c);
+				if (c != '\n'){
+					layout [i][j] = c;
+					if (c == 'e'){ enemyCount++;}
+				}else{j--;}
+			}
+		}
+	}
+	
+	file.close();
+	}
+
 //sets player texture
 void Map:: setPlayer(string newTexture){
 	
