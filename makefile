@@ -3,7 +3,7 @@ CFLAGS = -Wall -c -std=c++0x
 
 
 Game: $(OBJS)
-	g++ $(OBJS) -o Game -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system
+	g++ $(OBJS) -o GameMain -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system
 	
 GameMain.o: GameMain.cpp Map.h Player.h
 	g++ $(CFLAGS) GameMain.cpp -o GameMain.o
@@ -18,4 +18,4 @@ Player.o: Player.cpp Map.h Tile.h Player.h
 	g++ $(CFLAGS) Player.cpp -o Player.o
 	
 clean:
-	\rm *.o Game
+	\rm *.o GameMain

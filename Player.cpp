@@ -117,10 +117,11 @@ Player::Direction Player::adjacentPath(Direction** adjMap, int targetX, int targ
 	toRight = adjMap[targetY][targetX+1];
 
 	
-	if (above != none){return above;}
-	else if (toRight !=none){return toRight;}
-	else if (below != none){return below;}
+	
+	if (toRight !=none){return toRight;}
 	else if (toLeft != none){return toLeft;}
+	else if (below != none){return below;}
+	else if (above != none){return above;}
 	else{return none;}
 	
 	}
@@ -213,18 +214,19 @@ void Player:: target(int tX, int tY){
 				for(int y = 0; y < map.getHeight(); y++){
 					for(int x = 0; x < map.getWidth(); x++){
 						if (pathMap[y][x] != none){
-							if(map.getTile(x,y-1) != '#' && pathMap[y-1][x] == none){
-								pathMap[y-1][x] = pathMap[y][x];
-							}
-							if(map.getTile(x,y+1) != '#' && pathMap[y+1][x] == none){
-								pathMap[y+1][x] = pathMap[y][x];
-							}
+							
 							if(map.getTile(x-1,y) != '#' && pathMap[y][x-1] == none){
 								pathMap[y][x-1] = pathMap[y][x];
 							}
 							if(map.getTile(x+1,y) != '#' && pathMap[y][x+1] == none){
 								pathMap[y][x+1] = pathMap[y][x];
 								x++;
+							}
+							if(map.getTile(x,y-1) != '#' && pathMap[y-1][x] == none){
+								pathMap[y-1][x] = pathMap[y][x];
+							}
+							if(map.getTile(x,y+1) != '#' && pathMap[y+1][x] == none){
+								pathMap[y+1][x] = pathMap[y][x];
 							}
 							
 							
